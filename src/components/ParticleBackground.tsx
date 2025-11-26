@@ -4,11 +4,14 @@ const ParticleBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const canvasElement = canvasRef.current;
+    if (!canvasElement) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const context2d = canvasElement.getContext('2d');
+    if (!context2d) return;
+
+    const canvas = canvasElement;
+    const ctx = context2d;
 
     // Set canvas size
     const resizeCanvas = () => {

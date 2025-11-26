@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { motion, type TargetAndTransition } from 'framer-motion';
+import { useMemo, type CSSProperties } from 'react';
 
 type Emotion =
   | 'idle'
@@ -22,7 +22,7 @@ type MouthExpression = 'smile' | 'bigSmile' | 'open' | 'frown' | 'neutral' | 'o'
 type ArmPose = 'rest' | 'cover' | 'celebrate' | 'focus';
 
 interface EmotionConfig {
-  animation: Record<string, unknown>;
+  animation: TargetAndTransition;
   eyeExpression: EyeExpression;
   mouthExpression: MouthExpression;
   cheeks?: boolean;
@@ -181,8 +181,8 @@ const InteractiveMascot = ({
     }
   };
 
-  const getArmPose = (side: 'left' | 'right') => {
-    const base = {
+  const getArmPose = (side: 'left' | 'right'): { style: CSSProperties; animate: TargetAndTransition } => {
+    const base: CSSProperties = {
       width: size * 0.45,
       height: size * 0.12,
       backgroundColor: `${color}80`,
@@ -275,7 +275,7 @@ const InteractiveMascot = ({
             <motion.div
               key={side}
               className="absolute rounded-full opacity-80"
-              style={pose.style as Record<string, number | string>}
+              style={pose.style}
               animate={pose.animate}
               transition={{ duration: 0.5, repeat: config.armPose === 'celebrate' ? Infinity : 0, repeatType: 'reverse' }}
             />

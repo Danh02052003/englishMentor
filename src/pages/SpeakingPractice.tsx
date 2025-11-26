@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
@@ -8,28 +8,32 @@ import SpeakingScoreCard from '../components/SpeakingScoreCard';
 import {
   fetchSpeakingPrompts,
   scorePronunciation,
-  transcribeAudio
+  transcribeAudio,
+  type SpeakingPrompt,
+  type SpeakingScoreResult,
+  type TranscriptionResponse
 } from '../api/speaking';
 
 const SpeakingPractice = () => {
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [transcript, setTranscript] = useState('');
-  const [scoreResult, setScoreResult] = useState(null);
+  const [scoreResult, setScoreResult] = useState<SpeakingScoreResult | null>(null);
   const [expectedText, setExpectedText] = useState('');
 
-  const promptsQuery = useQuery({
+  const promptsQuery = useQuery<SpeakingPrompt[]>({
     queryKey: ['speaking-prompts'],
     queryFn: fetchSpeakingPrompts,
-    onSuccess: (data) => {
-      if (data?.length && !expectedText) {
-        setExpectedText(data[0].scenario);
-      }
-    }
   });
+
+  useEffect(() => {
+    if (promptsQuery.data?.length && !expectedText) {
+      setExpectedText(promptsQuery.data[0].scenario);
+    }
+  }, [expectedText, promptsQuery.data]);
 
   const sttMutation = useMutation({
     mutationFn: transcribeAudio,
-    onSuccess: (data) => {
+    onSuccess: (data: TranscriptionResponse) => {
       setTranscript(data.text);
       toast.success('Đã chuyển giọng nói thành văn bản');
     },
@@ -38,14 +42,14 @@ const SpeakingPractice = () => {
 
   const scoringMutation = useMutation({
     mutationFn: scorePronunciation,
-    onSuccess: (data) => {
+    onSuccess: (data: SpeakingScoreResult) => {
       setScoreResult(data);
       toast.success('Đã chấm điểm bài nói');
     },
     onError: () => toast.error('Không thể chấm điểm, hãy thử lại.')
   });
 
-  const promptsOptions = useMemo(
+  const promptsOptions = useMemo<SpeakingPrompt[]>(
     () => promptsQuery.data ?? [],
     [promptsQuery.data]
   );

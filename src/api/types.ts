@@ -18,9 +18,17 @@ export interface TokenResponse {
 
 export interface ReadingQuestion {
   question_id: string;
-  question_type: 'mcq' | 'tfng' | 'fill' | 'match';
+  question_type: 'mcq' | 'tfng' | 'fill' | 'match' | string;
   prompt: string;
   options?: string[];
+  correct_answer?: string;
+  correct_answers?: string[];
+  meta?: {
+    type?: string;
+    answerFormat?: 'single' | 'multi' | 'multi-select';
+    expectedCount?: number;
+    instructions?: string;
+  };
 }
 
 export interface ReadingTest {

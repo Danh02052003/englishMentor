@@ -74,9 +74,9 @@ const SmartFlashcardStudy = ({ words, flashcards = [], onComplete }: Props) => {
     }
     
     // Nếu đã đánh giá, luân phiên các chế độ khác
-    const remainingModes: StudyMode[] = ['fill-blank', 'multiple-choice', 'listen-write'].filter(
-      (m) => !completed.has(m)
-    ) as StudyMode[];
+    const remainingModes = (['fill-blank', 'multiple-choice', 'listen-write'] as StudyMode[]).filter(
+      (mode) => !completed.has(mode)
+    );
     
     if (remainingModes.length === 0) {
       return null; // Đã hoàn thành tất cả chế độ

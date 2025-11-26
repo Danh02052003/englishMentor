@@ -2,9 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import useRecorder from '../hooks/useRecorder';
 import { createAudioUrl, revokeAudioUrl } from '../utils/audio';
 
-const AudioRecorder = ({ onAudioReady }) => {
+interface AudioRecorderProps {
+  onAudioReady?: (blob: Blob | null) => void;
+}
+
+const AudioRecorder = ({ onAudioReady }: AudioRecorderProps) => {
   const { isRecording, audioBlob, error, startRecording, stopRecording, resetRecording } = useRecorder();
-  const [audioUrl, setAudioUrl] = useState(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (audioBlob) {

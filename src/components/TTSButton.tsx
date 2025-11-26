@@ -5,13 +5,18 @@ import toast from 'react-hot-toast';
 import { generateTTS } from '../api/speaking';
 import { createAudioUrl, revokeAudioUrl } from '../utils/audio';
 
-const TTSButton = ({ text, disabled }) => {
-  const [audioUrl, setAudioUrl] = useState(null);
-  const audioRef = useRef(null);
+interface TTSButtonProps {
+  text: string;
+  disabled?: boolean;
+}
+
+const TTSButton = ({ text, disabled = false }: TTSButtonProps) => {
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const ttsMutation = useMutation({
     mutationFn: generateTTS,
-    onSuccess: (blob) => {
+    onSuccess: (blob: Blob) => {
       if (audioUrl) {
         revokeAudioUrl(audioUrl);
       }
@@ -24,14 +29,13 @@ const TTSButton = ({ text, disabled }) => {
     onError: () => toast.error('Không tạo được giọng đọc. Thử lại sau.')
   });
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       if (audioUrl) {
         revokeAudioUrl(audioUrl);
       }
-    },
-    [audioUrl]
-  );
+    };
+  }, [audioUrl]);
 
   const handleClick = () => {
     if (!text?.trim()) {
