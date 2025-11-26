@@ -1,0 +1,7 @@
+# Environment secrets
+.env
+.env.*
+!.env.sample
+!.env.example
+
+node_modules
